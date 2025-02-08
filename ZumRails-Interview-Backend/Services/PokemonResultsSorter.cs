@@ -1,4 +1,5 @@
-﻿using ZumRails_Interview_Backend.Models;
+﻿using ZumRails_Interview_Backend.Exceptions;
+using ZumRails_Interview_Backend.Models;
 using ZumRails_Interview_Backend.Models.Sort;
 
 namespace ZumRails_Interview_Backend.Services
@@ -19,8 +20,17 @@ namespace ZumRails_Interview_Backend.Services
                     break;
                 default:
                     var sortByAsString = sortBy.ToString();
-                    sortedResults = pokemonResults.OrderBy(p => p.GetType().GetProperty(sortByAsString).GetValue(p, null))
-                             .ToArray();
+                    sortedResults = pokemonResults.OrderBy(p => {
+                        var propInfo = p.GetType().GetProperty(sortByAsString);
+                        if (propInfo is null)
+                        {
+                            throw new SortPropertyDoesNotExistException(sortByAsString);
+                        }
+                        else
+                        {
+                            return propInfo.GetValue(p, null);
+                        }
+                        }).ToArray();
                     break;
             }
 
