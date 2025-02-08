@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Configuration;
+using RestSharp;
 using ZumRails_Interview_Backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +9,16 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IPokemonService, PokemonService>();
+builder.Services.AddScoped<IPokemonService, PokemonService>(service =>
+{
+    var pokemonApiUrl = builder.Configuration.GetValue<string>("PokemonApiUrl");
+    if (pokemonApiUrl is null)
+    {
+        throw new ArgumentNullException("PokemonApiUrl is not defined.");
+    }
+    var client = new RestClient(pokemonApiUrl);
+    return new PokemonService(client);
+});
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IPokemonResultsSorter, PokemonResultsSorter>();
 
