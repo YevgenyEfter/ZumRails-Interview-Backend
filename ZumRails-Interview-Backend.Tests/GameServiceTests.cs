@@ -13,7 +13,7 @@ namespace ZumRails_Interview_Backend.Tests
         }
 
         [Fact]
-        public void PokemonWithResults_AllEqualPokemons_ShouldReturnAllTies()
+        public void Battle_AllEqualPokemons_ShouldReturnAllTies()
         {
             Pokemon[] pokemons = new Pokemon[8];
             for (int i = 0; i < pokemons.Length; i++)
@@ -32,7 +32,7 @@ namespace ZumRails_Interview_Backend.Tests
         }
 
         [Fact]
-        public void PokemonWithResults_OnlyOneWin_ShouldReturnAllWinnersButOne()
+        public void Battle_OnlyOneWin_ShouldReturnAllWinnersButOne()
         {
             Pokemon[] pokemons = new Pokemon[8];
             for (int i = 0; i < pokemons.Length - 1; i++)
