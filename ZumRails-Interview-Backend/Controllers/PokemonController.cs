@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ZumRails_Interview_Backend.DTOs;
-using ZumRails_Interview_Backend.Models;
 using ZumRails_Interview_Backend.Models.Sort;
 using ZumRails_Interview_Backend.Services;
 
@@ -18,10 +17,16 @@ namespace ZumRails_Interview_Backend.Controllers
                 return BadRequest("sortBy parameter is required.");
             }
 
-            var randomPokemonList = await pokemonService.GetRandomPokemons(8, 1, 151);
+            // The validity of sortBy and sortDirection values is handled by the framework,
+            // so no need to check if the value is within the valid range of enum values.
 
-            var pokemonsWithResults = gameService.Battle(randomPokemonList);
+            var randomPokemons = await pokemonService.GetRandomPokemons(8, 1, 151);
 
+            var pokemonsWithResults = gameService.Battle(randomPokemons);
+
+            pokemonsWithResults = sorter.Sort(pokemonsWithResults, (SortType)sortBy, sortDirection);
+
+            // Prepare result DTOs to send to client.
             var pokemonResults = pokemonsWithResults.Select(pokemonWithResults => new PokemonResultDto
             {
                 Id = pokemonWithResults.Pokemon.Id,
@@ -30,9 +35,7 @@ namespace ZumRails_Interview_Backend.Controllers
                 Wins = pokemonWithResults.Wins,
                 Losses = pokemonWithResults.Losses,
                 Ties = pokemonWithResults.Ties
-            }).ToArray();
-
-            pokemonResults = sorter.Sort(pokemonResults, (SortType)sortBy, sortDirection);
+            });
 
             return Ok(pokemonResults);
         }
