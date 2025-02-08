@@ -4,6 +4,6 @@ namespace ZumRails_Interview_Backend.Services
 {
     public interface IPokemonService
     {
-        Task<Pokemon> GetPokemon(int id);
+        Task<Pokemon[]> GetRandomPokemons(int numberOfPokemons, int rangeStart, int rangeEnd);
     }
 }

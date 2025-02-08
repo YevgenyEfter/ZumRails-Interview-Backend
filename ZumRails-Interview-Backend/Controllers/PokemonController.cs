@@ -18,20 +18,9 @@ namespace ZumRails_Interview_Backend.Controllers
                 return BadRequest("sortBy parameter is required.");
             }
 
-            var dict = new Dictionary<int, Pokemon>();
-            var rand = new Random();
-            while (dict.Count < 8)
-            {
-                var pokemonId = rand.Next(1, 151);
-                if (!dict.ContainsKey(pokemonId))
-                {
-                    dict[pokemonId] = await pokemonService.GetPokemon(pokemonId);
-                }
-            }
+            var randomPokemonList = await pokemonService.GetRandomPokemons(8, 1, 151);
 
-            var pokemonList = dict.Values.ToArray();
-
-            var pokemonsWithResults = gameService.Battle(pokemonList);
+            var pokemonsWithResults = gameService.Battle(randomPokemonList);
 
             var pokemonResults = pokemonsWithResults.Select(pokemonWithResults => new PokemonResultDto
             {

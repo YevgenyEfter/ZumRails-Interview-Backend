@@ -8,8 +8,24 @@ namespace ZumRails_Interview_Backend.Services
     public class PokemonService : IPokemonService
     {
         private RestClient client = new RestClient("https://pokeapi.co/api/v2/pokemon/");
-        
-        public async Task<Pokemon> GetPokemon(int id)
+
+        public async Task<Pokemon[]> GetRandomPokemons(int numberOfPokemons, int rangeStart, int rangeEnd)
+        {
+            var dict = new Dictionary<int, Pokemon>();
+            var rand = new Random();
+            while (dict.Count < numberOfPokemons)
+            {
+                var pokemonId = rand.Next(rangeStart, rangeEnd);
+                if (!dict.ContainsKey(pokemonId))
+                {
+                    dict[pokemonId] = await this.GetPokemon(pokemonId);
+                }
+            }
+
+            return dict.Values.ToArray();
+        }
+
+        private async Task<Pokemon> GetPokemon(int id)
         {
             var request = new RestRequest(id.ToString(), Method.Get);
             var response = await client.ExecuteAsync<PokemonDto>(request);
