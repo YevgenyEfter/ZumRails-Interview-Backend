@@ -5,10 +5,8 @@ using ZumRails_Interview_Backend.Models;
 
 namespace ZumRails_Interview_Backend.Services
 {
-    public class PokemonService : IPokemonService
+    public class PokemonService(RestClient restClient) : IPokemonService
     {
-        private RestClient client = new RestClient("https://pokeapi.co/api/v2/pokemon/");
-
         public async Task<Pokemon[]> GetRandomPokemons(int numberOfPokemons, int rangeStart, int rangeEnd)
         {
             var dict = new Dictionary<int, Pokemon>();
@@ -28,7 +26,7 @@ namespace ZumRails_Interview_Backend.Services
         private async Task<Pokemon> GetPokemon(int id)
         {
             var request = new RestRequest(id.ToString(), Method.Get);
-            var response = await client.ExecuteAsync<PokemonDto>(request);
+            var response = await restClient.ExecuteAsync<PokemonDto>(request);
             if (response.IsSuccessful && response.Data is not null)
             {
                 return new Pokemon
