@@ -41,7 +41,7 @@ namespace ZumRails_Interview_Backend.Services
             }
             else
             {
-                throw new FetchPokemonException(id);
+                throw new FetchPokemonFailureException(id);
             }
         }
     }
